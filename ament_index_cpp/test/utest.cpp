@@ -21,7 +21,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "ament_index_cpp/get_package_prefix.hpp"
+#include "ament_index_cpp/get_package_prefix_path.hpp"
 #include "ament_index_cpp/get_package_share_path.hpp"
 #include "ament_index_cpp/get_packages_with_prefixes.hpp"
 #include "ament_index_cpp/get_resource.hpp"
@@ -216,29 +216,29 @@ TEST(AmentIndexCpp, get_resource_underlay_base_path) {
   EXPECT_EQ(result.resourcePath, generate_subfolder_path("prefix2"));
 }
 
-TEST(AmentIndexCpp, get_package_prefix) {
+TEST(AmentIndexCpp, get_package_prefix_path) {
   // Ensure that a known to exist package is found and that a known to not exist package is not.
   std::list<std::string> subfolders;
   subfolders.push_back("prefix1");  // only contains foo and bar packages
   subfolders.push_back("prefix2");  // only contains bar and baz packages
   set_ament_prefix_path(subfolders);
   std::filesystem::path path_result;
-  ament_index_cpp::get_package_prefix("foo", path_result);
+  path_result = ament_index_cpp::get_package_prefix_path("foo");
   // foo is found in prefix 1
   EXPECT_EQ(generate_subfolder_path("prefix1"), path_result.string());
   // bar is in both, but prefix 1 takes precedence
-  ament_index_cpp::get_package_prefix("bar", path_result);
+  path_result = ament_index_cpp::get_package_prefix_path("bar");
   EXPECT_EQ(generate_subfolder_path("prefix1"), path_result.string());
   // baz is found in prefix 2 only
-  ament_index_cpp::get_package_prefix("baz", path_result);
+  path_result = ament_index_cpp::get_package_prefix_path("baz");
   EXPECT_EQ(generate_subfolder_path("prefix2"), path_result.string());
   // exception when package is not found
   EXPECT_THROW(
-    ament_index_cpp::get_package_prefix("does_not_exist", path_result),
+    ament_index_cpp::get_package_prefix_path("does_not_exist"),
     ament_index_cpp::PackageNotFoundError);
   // exception when the package name is empty
   EXPECT_THROW(
-    ament_index_cpp::get_package_prefix("", path_result),
+    ament_index_cpp::get_package_prefix_path(""),
     ament_index_cpp::PackageNotFoundError);
 }
 

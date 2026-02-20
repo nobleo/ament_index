@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AMENT_INDEX_CPP__GET_PACKAGE_PREFIX_HPP_
-#define AMENT_INDEX_CPP__GET_PACKAGE_PREFIX_HPP_
+#ifndef AMENT_INDEX_CPP__GET_PACKAGE_PREFIX_PATH_HPP_
+#define AMENT_INDEX_CPP__GET_PACKAGE_PREFIX_PATH_HPP_
 
 #include <filesystem>
 #include <stdexcept>
@@ -25,17 +25,34 @@
 namespace ament_index_cpp
 {
 
-/// Return the installation prefix of the given package if found.
+/// Thrown when a package is not found.
+class PackageNotFoundError : public std::out_of_range
+{
+public:
+  /// Constructor of an exception class to notify that a package is not found
+  /*
+  * \param[in] package_name used in the exception message
+  */
+  AMENT_INDEX_CPP_PUBLIC
+  explicit PackageNotFoundError(const std::string & package_name);
+
+  AMENT_INDEX_CPP_PUBLIC
+  virtual ~PackageNotFoundError();
+
+  /// package name used in the exception message
+  const std::string package_name;
+};
+
+/// Return the installation prefix path of the given package if found.
 /**
  * \param[in] package_name the name of the package to locate.
  * \return installation prefix path in which the package was found.
  * \throws PackageNotFoundError when the given package is not found.
  */
-[[deprecated("Use get_package_prefix_path(...) instead")]]
 AMENT_INDEX_CPP_PUBLIC
-std::string
-get_package_prefix(const std::string & package_name);
+std::filesystem::path
+get_package_prefix_path(const std::string & package_name);
 
 }  // namespace ament_index_cpp
 
-#endif  // AMENT_INDEX_CPP__GET_PACKAGE_PREFIX_HPP_
+#endif  // AMENT_INDEX_CPP__GET_PACKAGE_PREFIX_PATH_HPP_

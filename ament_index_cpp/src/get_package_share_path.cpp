@@ -17,7 +17,7 @@
 #include <filesystem>
 #include <string>
 
-#include "ament_index_cpp/get_package_prefix.hpp"
+#include "ament_index_cpp/get_package_prefix_path.hpp"
 
 namespace ament_index_cpp
 {
@@ -25,9 +25,7 @@ namespace ament_index_cpp
 std::filesystem::path get_package_share_path(
   const std::string & package_name)
 {
-  std::filesystem::path result;
-  get_package_prefix(package_name, result);
-  return result / "share" / package_name;
+  return get_package_prefix_path(package_name) / "share" / package_name;
 }
 
 }  // namespace ament_index_cpp

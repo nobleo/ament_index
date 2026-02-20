@@ -23,54 +23,10 @@
 namespace ament_index_cpp
 {
 
-static size_t package_not_found_count = 0;
-
-static
-std::string
-format_package_not_found_error_message(const std::string & package_name)
-{
-  std::string message = "package '" + package_name + "' not found";
-
-  // Don't need to print out the package paths more than once
-  if (package_not_found_count++ > 0) {
-    return message;
-  }
-
-  message += ", searching: [";
-  auto search_paths = get_searcheable_paths();
-  for (const auto & path : search_paths) {
-    message += path.string() + ", ";
-  }
-  if (search_paths.size() > 0) {
-    message = message.substr(0, message.size() - 2);
-  }
-  return message + "]";
-}
-
-PackageNotFoundError::PackageNotFoundError(const std::string & _package_name)
-: std::out_of_range(format_package_not_found_error_message(_package_name)),
-  package_name(_package_name)
-{}
-
-PackageNotFoundError::~PackageNotFoundError() {}
-
 std::string
 get_package_prefix(const std::string & package_name)
 {
-  std::filesystem::path result;
-  get_package_prefix(package_name, result);
-  return result.string();
+  return get_package_prefix_path(package_name).string();
 }
 
-void
-get_package_prefix(const std::string & package_name, std::filesystem::path & path)
-{
-  std::string content;
-  std::string prefix_path;
-  auto result = get_resource("packages", package_name);
-  if (result.resourcePath == std::nullopt) {
-    throw PackageNotFoundError(package_name);
-  }
-  path = result.resourcePath.value().string();
-}
 }  // namespace ament_index_cpp
